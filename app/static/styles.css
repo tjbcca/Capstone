@@ -2846,19 +2846,19 @@ textarea.form-control-lg {
 
 .btn-primary {
   --bs-btn-color: #fff;
-  --bs-btn-bg: #2937f0;
-  --bs-btn-border-color: #2937f0;
+  --bs-btn-bg: #CF4C44;
+  --bs-btn-border-color: #CF4C44;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #232fcc;
-  --bs-btn-hover-border-color: #212cc0;
+  --bs-btn-hover-bg: #CF4C44;
+  --bs-btn-hover-border-color: #CF4C44;
   --bs-btn-focus-shadow-rgb: 73, 85, 242;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #212cc0;
-  --bs-btn-active-border-color: #1f29b4;
+  --bs-btn-active-bg: #CF4C44;
+  --bs-btn-active-border-color: #CF4C44;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #2937f0;
-  --bs-btn-disabled-border-color: #2937f0;
+  --bs-btn-disabled-bg: #CF4C44;
+  --bs-btn-disabled-border-color: #CF4C44;
 }
 
 .btn-secondary {
@@ -11162,7 +11162,8 @@ a{color:inherit;text-decoration:none}
 	max-width:525px;
 	min-height:584px;
 	position:relative;
-	background:url(https://raw.githubusercontent.com/khadkamhn/day-01-login-form/master/img/bg.jpg) no-repeat center;
+	background:url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPBixXPeVPHHZn9LyOZpyHWIVJmz2XsrikbQ&s) no-repeat center;
+  background-size: 190%;
 	box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
 }
 .login-html{

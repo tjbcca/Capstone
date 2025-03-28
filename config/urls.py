@@ -21,7 +21,8 @@ from app.views import *
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", signin_or_login),
-    path("home/", index, name='Home'),
-    path("checklist/", checks)
+    path("", signin_or_login, name='login'),
+    path("home/", home, name='Home'),
+    path('checkup/<int:checkup_id>/', checks, name='checks'),
+    path('logout/', Logout, name='logout')
 ]
