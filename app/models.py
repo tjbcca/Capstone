@@ -12,8 +12,10 @@ class Profile(models.Model):
     
 class Checkup(models.Model):
     customer = models.OneToOneField(User, on_delete=models.CASCADE)
-    status = models.TextField()
+    status = models.TextField(default='Pending')
     inspector = models.ForeignKey(User, related_name='inspector', on_delete=models.CASCADE, default=1)
+    start_datetime = models.DateTimeField()
+    depart_datetime = models.DateTimeField()
     def save(self, *args, **kwargs):
         super(Checkup, self).save(*args, **kwargs)
         if not self.items.exists():
@@ -34,6 +36,13 @@ class Checkup(models.Model):
             ]
             for check in interior_checks + exterior_checks:
                 ChecklistItem.objects.create(checklist=self, description=check)
+
+    def completion_percentage(self):
+        total_items = self.items.count()
+        if total_items == 0:
+            return 0
+        completed_items = self.items.filter(is_completed=True).count()
+        return round((completed_items / total_items) * 100)
 class ChecklistItem(models.Model):
     checklist = models.ForeignKey(Checkup, related_name='items', on_delete=models.CASCADE)
     description = models.CharField(max_length=255)
@@ -43,3 +52,6 @@ class ChecklistItem(models.Model):
 def Context(request, extra=None):
     BasicContext = {'user':request.user}
     return {k: v for d in (BasicContext, extra) for k, v in d.items()}
+
+def deleteAll():
+    Checkup.objects.all().delete()

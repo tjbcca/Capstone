@@ -162,13 +162,14 @@
         </li>
 
         <!-- Nav Item - Tables -->
+        {% if user.groups.all.0.name == 'Inspector' %}
         <li class="nav-item">
           <a class="nav-link" href="tables.html">
             <i class="fas fa-fw fa-table"></i>
-            <span>Tables</span></a
+            <span>Checkup Management</span></a
           >
         </li>
-
+        {% endif %}
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block" />
 
@@ -490,17 +491,20 @@
                 </div>
               </div>
 
-              <!-- Earnings (Monthly) Card Example -->
+              {% for i in yourChecks %}
+              <!-- Progress Bar -->
               <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-info shadow h-100 py-2">
                   <div class="card-body">
                     <div class="row no-gutters align-items-center">
                       <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks</div>
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                          {{ i.customer }}
+                        </div>
                         <div class="row no-gutters align-items-center">
                           <div class="col-auto">
                             <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                              {{ percentage }}%
+                              {{ i.completion_percentage }}%
                             </div>
                           </div>
                           <div class="col">
@@ -508,7 +512,7 @@
                               <div
                                 class="progress-bar bg-info"
                                 role="progressbar"
-                                style="width: {{ percentage }}%"
+                                style="width: {{ i.completion_percentage }}%"
                                 aria-valuenow="50"
                                 aria-valuemin="0"
                                 aria-valuemax="100"
@@ -524,6 +528,7 @@
                   </div>
                 </div>
               </div>
+              {% endfor %}
 
               <!-- Pending Requests Card Example -->
               <div class="col-xl-3 col-md-6 mb-4">
@@ -555,7 +560,7 @@
                   <div
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
                   >
-                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">BOX_TEMPLATE</h6>
                     <div class="dropdown no-arrow">
                       <a
                         class="dropdown-toggle"
@@ -587,6 +592,51 @@
 
               <div class="col-lg-6 mb-4"></div>
             </div>
+            {% if user.groups.all.0.name == 'Inspector' %}
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+              <h1 class="h3 mb-0 text-gray-800">Assigned Checkups</h1>
+            </div>
+            {% for i in assignedChecks %}
+            <!-- Progress Bar -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <a href="{% url 'checks' checkup_id=i.id %}">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                          {{ i.customer }}
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                          <div class="col-auto">
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                              {{ i.completion_percentage }}%
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="progress progress-sm mr-2">
+                              <div
+                                class="progress-bar bg-info"
+                                role="progressbar"
+                                style="width: {{ i.completion_percentage }}%"
+                                aria-valuenow="50"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {% endfor %} {% endif %}
           </div>
           {% endblock %}
           <!-- /.container-fluid -->

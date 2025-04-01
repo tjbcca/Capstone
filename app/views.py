@@ -7,9 +7,11 @@ from django.contrib.auth.decorators import login_required
 from app.forms import *
 import random
 
-
+@login_required
 def home(request):
-    context = {'percentage':50}
+    yourCheckups = Checkup.objects.filter(customer=request.user)
+    assignedCheckups = Checkup.objects.filter(inspector=request.user)
+    context = {'percentage':50,'assignedChecks':assignedCheckups,'yourChecks':yourCheckups}
     return render(request, 'base.html', Context(request,context))
 
 @login_required
@@ -26,10 +28,13 @@ def checks(request, checkup_id):
             return redirect('checks', checkup_id=checkup.id)
     else:
         formset = [ChecklistItemForm(prefix=str(item.id), instance=item) for item in checkup.items.all()]
-    context = {'checkup': checkup, 'formset': formset, 'user': request.user}
+    context = {'checkup': checkup, 'formset': formset, 'user': request.user,'percentage':checkup.completion_percentage()}
     return render(request, 'checks.html', Context(request,context))
 
 def signin_or_login(request):
+    if request.user.is_authenticated:
+        print("You are already logged in")
+        return redirect('Home')
     if request.method == 'POST':
         action = request.POST.get('action')  # 'login' or 'signup'
 
