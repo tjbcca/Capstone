@@ -14,8 +14,8 @@ class Checkup(models.Model):
     customer = models.OneToOneField(User, on_delete=models.CASCADE)
     status = models.TextField(default='Pending')
     inspector = models.ForeignKey(User, related_name='inspector', on_delete=models.CASCADE, default=1)
-    start_datetime = models.DateTimeField()
-    depart_datetime = models.DateTimeField()
+    startDT = models.DateTimeField(null=True)
+    departDT = models.DateTimeField(null=True)
     def save(self, *args, **kwargs):
         super(Checkup, self).save(*args, **kwargs)
         if not self.items.exists():
