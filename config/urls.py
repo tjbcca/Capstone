@@ -24,5 +24,7 @@ urlpatterns = [
     path("", signin_or_login, name='login'),
     path("home/", home, name='Home'),
     path('checkup/<int:checkup_id>/', checks, name='checks'),
-    path('logout/', Logout, name='logout')
+    path('logout/', Logout, name='logout'),
+    path('management/', manage, name='management'),
+    path('calendar/', calendar_view, name='calendar')
 ]

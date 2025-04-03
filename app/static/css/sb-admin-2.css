@@ -185,7 +185,7 @@ a {
 }
 
 a:hover {
-  color: #224abe;
+  color: #5a5c69;
   text-decoration: underline;
 }
 
@@ -6297,7 +6297,7 @@ a.close.disabled {
 .bs-tooltip-auto[x-placement^="left"] .arrow::before {
   left: 0;
   border-width: 0.4rem 0 0.4rem 0.4rem;
-  border-left-color: #000;
+  border-left-color: var(--brand-red);
 }
 
 .tooltip-inner {
@@ -6812,7 +6812,10 @@ button.bg-success:focus {
 }
 
 .bg-info {
-  background-color: #36b9cc !important;
+  background-color: var(--brand-red) !important;
+}
+.bg-info2 {
+  background-color: var(--brand-blue) !important;
 }
 
 a.bg-info:hover,
@@ -9998,7 +10001,7 @@ a.text-success:focus {
 }
 
 .text-info {
-  color: #36b9cc !important;
+  color: var(--brand-red) !important;
 }
 
 a.text-info:hover,
@@ -10456,7 +10459,7 @@ a:focus {
 }
 
 .border-left-info {
-  border-left: 0.25rem solid #36b9cc !important;
+  border-left: 0.25rem solid var(--brand-red) !important;
 }
 
 .border-bottom-info {

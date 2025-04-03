@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from encrypted_model_fields.fields import EncryptedCharField
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -11,7 +12,10 @@ class Profile(models.Model):
         return f'{self.user.username} Profile'
     
 class Checkup(models.Model):
-    customer = models.OneToOneField(User, on_delete=models.CASCADE)
+    customer = models.OneToOneField(User, on_delete=models.CASCADE, blank=True,null=True)
+    name = models.TextField(default="Unnamed")
+    address = EncryptedCharField(max_length=100)
+    contact = EncryptedCharField(max_length=150,blank=True,null=True)
     status = models.TextField(default='Pending')
     inspector = models.ForeignKey(User, related_name='inspector', on_delete=models.CASCADE, default=1)
     startDT = models.DateTimeField(null=True)
@@ -51,7 +55,10 @@ class ChecklistItem(models.Model):
 
 def Context(request, extra=None):
     BasicContext = {'user':request.user}
-    return {k: v for d in (BasicContext, extra) for k, v in d.items()}
+    if extra != None:
+        return {k: v for d in (BasicContext, extra) for k, v in d.items()}
+    else:
+        return BasicContext
 
 def deleteAll():
     Checkup.objects.all().delete()
