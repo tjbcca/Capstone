@@ -12,12 +12,12 @@ class Profile(models.Model):
         return f'{self.user.username} Profile'
     
 class Checkup(models.Model):
-    customer = models.OneToOneField(User, on_delete=models.CASCADE, blank=True,null=True)
-    name = models.TextField(default="Unnamed")
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True,null=True)
+    name = models.CharField(max_length=50,default="Unnamed")
     address = EncryptedCharField(max_length=100)
     contact = EncryptedCharField(max_length=150,blank=True,null=True)
-    status = models.TextField(default='Pending')
-    inspector = models.ForeignKey(User, related_name='inspector', on_delete=models.CASCADE, default=1)
+    status = models.CharField(max_length=50,default='Pending')
+    inspectors = models.ManyToManyField(User, related_name='inspector', default=1)
     startDT = models.DateTimeField(null=True)
     departDT = models.DateTimeField(null=True)
     def save(self, *args, **kwargs):

@@ -26,5 +26,7 @@ urlpatterns = [
     path('checkup/<int:checkup_id>/', checks, name='checks'),
     path('logout/', Logout, name='logout'),
     path('management/', manage, name='management'),
-    path('calendar/', calendar_view, name='calendar')
+    path('calendar/', calendar_view, name='calendar'),
+    path('create/',checkupCreate,name='Create'),
+    path('edit/<int:checkup_id>/', checkupCreate, name='Edit')
 ]

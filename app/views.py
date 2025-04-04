@@ -15,7 +15,7 @@ def home(request):
         print("You not logged in")
         return redirect('login')
     yourCheckups = Checkup.objects.filter(customer=request.user)
-    assignedCheckups = Checkup.objects.filter(inspector=request.user)
+    assignedCheckups = Checkup.objects.filter(inspectors=request.user)
     context = {'assignedChecks':assignedCheckups,'yourChecks':yourCheckups}
     return render(request, 'base.html', Context(request,context))
 
@@ -29,8 +29,8 @@ def is_user_in_group(user, group_name):
 @login_required
 def checks(request, checkup_id):
     checkup = get_object_or_404(Checkup, id=checkup_id)
-    if request.user != checkup.inspector:
-        return redirect('Home')  # Render a "Forbidden" page if the user is not the inspector
+    if request.user not in checkup.inspectors.all():
+            return redirect('Home')
 
     if request.method == 'POST':
         formset = [ChecklistItemForm(request.POST, prefix=str(item.id), instance=item) for item in checkup.items.all()]
@@ -46,8 +46,8 @@ def checks(request, checkup_id):
 @login_required
 def checkupView(request, checkup_id):
     checkup = get_object_or_404(Checkup, id=checkup_id)
-    if request.user != checkup.inspector:
-        return redirect('Home')  # Render a "Forbidden" page if the user is not the inspector
+    if request.user not in checkup.inspectors.all():
+            return redirect('Home')
 
     if request.method == 'POST':
         formset = [ChecklistItemForm(request.POST, prefix=str(item.id), instance=item) for item in checkup.items.all()]
@@ -166,3 +166,30 @@ def signin_or_login(request):
 def Logout(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def checkupCreate(request, checkup_id=None):
+    if checkup_id:
+        checkup = get_object_or_404(Checkup, id=checkup_id)
+        if request.user not in checkup.inspectors.all():
+            return redirect('Home')  # Redirect to a permission denied page or another page
+    else:
+        checkup = None
+
+    if request.method == 'POST':
+        if 'delete' in request.POST:
+            checkup.delete()
+            return redirect('management')  # Redirect to a list view after deletion
+        else:
+            form = CheckupForm(request.POST, instance=checkup)
+            if form.is_valid():
+                form.save()
+                return redirect('management')  # Redirect to a list view or detail view after saving
+    else:
+        form = CheckupForm(instance=checkup)
+
+    context = {
+        'form': form,
+        'checkup': checkup,
+    }
+    return render(request, 'create.html', Context(request,context))

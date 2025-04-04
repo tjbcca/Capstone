@@ -2,6 +2,7 @@
 <!-- <h3>
   This page will be more appointment creation and management.
 </h3> -->
+<a href="{% url 'Create' %}"><button>Create</button></a><br><br>
 <form method="GET" action="">
   <input type="text" name="q" placeholder="Search by name" value="{{ query }}">
   <select name="status">
@@ -27,7 +28,7 @@
 
 <ul>
   {% for checkup in checkups %}
-      <li><a href="{% url 'checks' checkup_id=checkup.id %}">{{ checkup.name }}, {{ checkup.startDT }} at {{ checkup.address }} - {{ checkup.status }}</a></li>
+      <li><a href="{% url 'Edit' checkup_id=checkup.id %}">{{ checkup.name }}, {{ checkup.startDT }} at {{ checkup.address }} - {{ checkup.status }}</a></li>
   {% endfor %}
 </ul>
 

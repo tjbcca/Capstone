@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container my-4">
+  <h2 class="text-center">{% if checkup %}Edit{% else %}Create{% endif %} Checkup</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">{{ form.as_p }}</div>
+    <button type="submit" class="btn btn-primary">
+      {% if checkup %}Update{% else %}Create{% endif %}
+    </button>
+    {% if checkup %}
+    <button type="submit" name="delete" class="btn btn-danger">Delete</button>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}
