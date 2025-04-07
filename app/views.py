@@ -40,25 +40,29 @@ def checks(request, checkup_id):
             return redirect('checks', checkup_id=checkup.id)
     else:
         formset = [ChecklistItemForm(prefix=str(item.id), instance=item) for item in checkup.items.all()]
-    context = {'checkup': checkup, 'formset': formset, 'user': request.user,'percentage':checkup.completion_percentage()}
+    context = {'checkup': checkup, 'formset': formset,'percentage':checkup.completion_percentage()}
     return render(request, 'checks.html', Context(request,context))
 
 @login_required
 def checkupView(request, checkup_id):
     checkup = get_object_or_404(Checkup, id=checkup_id)
-    if request.user not in checkup.inspectors.all():
-            return redirect('Home')
-
-    if request.method == 'POST':
-        formset = [ChecklistItemForm(request.POST, prefix=str(item.id), instance=item) for item in checkup.items.all()]
-        if all(form.is_valid() for form in formset):
-            for form in formset:
-                form.save()
-            return redirect('checks', checkup_id=checkup.id)
+    if request.user==checkup.customer:
+        context = {'checkup': checkup,'percentage':checkup.completion_percentage()}
+        return render(request, 'customerView.html', Context(request,context))
     else:
-        formset = [ChecklistItemForm(prefix=str(item.id), instance=item) for item in checkup.items.all()]
-    context = {'checkup': checkup, 'formset': formset, 'user': request.user,'percentage':checkup.completion_percentage()}
-    return render(request, 'checks.html', Context(request,context))
+        if request.user not in checkup.inspectors.all():
+                return redirect('Home')
+
+        if request.method == 'POST':
+            formset = [ChecklistItemForm(request.POST, prefix=str(item.id), instance=item) for item in checkup.items.all()]
+            if all(form.is_valid() for form in formset):
+                for form in formset:
+                    form.save()
+                return redirect('checks', checkup_id=checkup.id)
+        else:
+            formset = [ChecklistItemForm(prefix=str(item.id), instance=item) for item in checkup.items.all()]
+        context = {'checkup': checkup, 'formset': formset,'percentage':checkup.completion_percentage()}
+        return render(request, 'checks.html', Context(request,context))
 
 @login_required
 def manage(request):
@@ -171,11 +175,16 @@ def Logout(request):
 def checkupCreate(request, checkup_id=None):
     if checkup_id:
         checkup = get_object_or_404(Checkup, id=checkup_id)
-        if request.user not in checkup.inspectors.all():
-            return redirect('Home')  # Redirect to a permission denied page or another page
+        if request.user==checkup.customer:
+            context = {'checkup': checkup,'percentage':checkup.completion_percentage()}
+            return render(request, 'customerView.html', Context(request,context))
+        else:
+            if request.user not in checkup.inspectors.all():
+                return redirect('Home')  # Redirect to a permission denied page or another page
     else:
         checkup = None
-
+    if not is_user_in_group(request.user, 'Inspector'):
+        return redirect('Home')
     if request.method == 'POST':
         if 'delete' in request.POST:
             checkup.delete()

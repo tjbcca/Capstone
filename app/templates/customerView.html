@@ -1,0 +1,9 @@
+{% extends 'base.html' %} {% block content %}
+<h1>Checklist for {{ checkup.startDT }}</h1>
+<ul>
+  {% for item in checkup.items.all %}
+  <li>{{ item.description }}: {% if item.is_completed %}Complete{% else %}Incomplete{% endif %}</li>
+  {% endfor %}
+</ul>
+<h1>{{ checkup.completion_percentage }}%</h1>
+{% endblock %}

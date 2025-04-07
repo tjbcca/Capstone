@@ -23,6 +23,8 @@ class CheckupForm(forms.ModelForm):
         fields = ['customer', 'name', 'address', 'contact', 'status', 'inspectors', 'startDT', 'departDT']
         widgets = {
             'inspectors': forms.SelectMultiple(),
+            'startDT': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'departDT': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
 
     def __init__(self, *args, **kwargs):
