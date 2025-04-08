@@ -1,8 +1,48 @@
 {% extends 'base.html' %} {% block content %}
+<style>
+  form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 1%;
+    margin-bottom: 2rem;
+  }
+  form input[type="text"],
+  form select,
+  form button {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  form button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  form button:hover {
+    background-color: #0056B3;
+  }
+  .c-button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: #28A745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .c-button:hover {
+    background-color: #218838;
+  }
+</style>
 <!-- <h3>
   This page will be more appointment creation and management.
 </h3> -->
-<a href="{% url 'Create' %}"><button>Create</button></a><br><br>
+<a href="{% url 'Create' %}"><button class="c-button">Create</button></a><br><br>
 <form method="GET" action="">
   <input type="text" name="q" placeholder="Search by name" value="{{ query }}">
   <select name="status">

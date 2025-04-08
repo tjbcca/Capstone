@@ -1,5 +1,94 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container my-4">
+<style>
+  /* General Container Styling */
+  .container2 {
+    width: 100%;
+    max-width: 600px; /* Ensure the form doesn't stretch too wide */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  /* Form Title Styling */
+  h2.text-center {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px; /* Add spacing between the title and form */
+  }
+  /* Form Layout */
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Adds space between form fields */
+  }
+  .mb-3 {
+    margin-bottom: 15px; /* Ensures spacing between form fields */
+  }
+  /* Style Inputs, Selects, and Textareas */
+  form input,
+  form select,
+  form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  /* Button Styles */
+  .c-button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  /* Primary Button (Create or Update) */
+  .c-button.btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
+  .c-button.btn-primary:hover {
+    background-color: #0056b3;
+  }
+  /* Danger Button (Delete) */
+  .c-button.btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  .c-button-danger:hover {
+    background-color: #c82333;
+  }
+  /* Add spacing between buttons */
+  button:not(:last-child) {
+    margin-bottom: 10px;
+  }
+  /* Responsive Design for Smaller Screens */
+  @media (max-width: 600px) {
+    .container2 {
+      padding: 15px;
+    }
+    h2.text-center {
+      font-size: 20px;
+    }
+    .c-button {
+      font-size: 14px;
+    }
+    /* Ensure form fields are properly spaced on mobile */
+    form input,
+    form select,
+    form textarea {
+      font-size: 14px;
+    }
+  }
+</style>
+<div class="container2 my-4">
   <h2 class="text-center">{% if checkup %}Edit{% else %}Create{% endif %} Checkup</h2>
   <form method="post">
     {% csrf_token %}
@@ -11,5 +100,8 @@
     <button type="submit" name="delete" class="btn btn-danger">Delete</button>
     {% endif %}
   </form>
+  {% if checkup != None %}
+  <a href="{% url 'checks' checkup_id=checkup.id %}">Checklist</a>
+  {% endif %}
 </div>
 {% endblock %}
