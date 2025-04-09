@@ -50,7 +50,7 @@
           {% if day != 0 %}
           <strong>{{ day }}</strong>
           {% for event in events %} {% if event.date.day == day %}
-          <a href="{% url 'Home' %}"
+          <a href="{% url 'Edit' checkup_id=event.id %}"
             ><div class="event">
               {{ event.name }}<br />{{ event.address }}<br />{{ event.status }}
             </div></a

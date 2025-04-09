@@ -29,5 +29,6 @@ urlpatterns = [
     path('calendar/', calendar_view, name='calendar'),
     path('create/',checkupCreate,name='Create'),
     path('info/<int:checkup_id>/', checkupCreate, name='Edit'),
+    path('profile/', update_user, name='userProfile'),
     path('Usercheck/',accounts, name="accounts")
 ]

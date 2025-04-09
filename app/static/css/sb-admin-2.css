@@ -11021,8 +11021,8 @@ a:focus {
   }
 }
 .RebCheckLogo {
-  max-width: 7;
-  max-height: 7rem;
+  max-width: 100%;
+  max-height: 100%;
   background-color: white;
   border-radius: 10%;
   padding: 5pt;
@@ -11702,4 +11702,8 @@ footer.sticky-footer .copyright {
 
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
+}
+
+.BLUE {
+  color: var(--brand-blue);
 }

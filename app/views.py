@@ -48,7 +48,7 @@ def checks(request, checkup_id):
 @login_required
 def checkupView(request, checkup_id):
     checkup = get_object_or_404(Checkup, id=checkup_id)
-    if request.user==checkup.customer:
+    if (request.user==checkup.customer) and (request.user not in checkup.inspectors.all()):
         context = {'checkup': checkup,'percentage':checkup.completion_percentage()}
         return render(request, 'customerView.html', Context(request,context))
     else:
@@ -108,8 +108,11 @@ def manage(request):
 def calendar_view(request):
     year = datetime.now().date().year
     month = datetime.now().date().month
-    checkups = Checkup.objects.filter(startDT__year=year, startDT__month=month)
-    events = [{'date': checkup.startDT, 'name': checkup.name, 'address':checkup.address,'status':checkup.status} for checkup in checkups]
+    if is_user_in_group(request.user,'Inspector'):
+        checkups = Checkup.objects.filter(startDT__year=year, startDT__month=month)
+    else:
+        checkups = Checkup.objects.filter(startDT__year=year, startDT__month=month, customer=request.user)
+    events = [{'date': checkup.startDT, 'name': checkup.name, 'address':checkup.address,'status':checkup.status,'id':checkup.id} for checkup in checkups]
 
     # Generate calendar structure
     calendar = generate_calendar(year, month)
@@ -140,11 +143,15 @@ def signin_or_login(request):
             # Handle Sign Up
             form = UserCreationForm(request.POST)
             if form.is_valid():
-                form.save()  # Create new user
+                user = form.save(commit=False)  # Create new user without saving to the database yet
+                email = request.POST.get('email')  # Get email from POST data
+                user.email = email  # Set the email for the user
+                user.save()  # Save the user with the email
+                CustomerProfile.objects.create(customer=user)
                 username = form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password1')
                 user = authenticate(request, username=username, password=password)
-                auth_login(request,user)
+                auth_login(request, user)
                 messages.success(request, f'Account created for {username}!')
                 return redirect('Home')  # Redirect to landing page after successful sign-up
             else:
@@ -177,7 +184,7 @@ def Logout(request):
 def checkupCreate(request, checkup_id=None):
     if checkup_id:
         checkup = get_object_or_404(Checkup, id=checkup_id)
-        if request.user==checkup.customer:
+        if (request.user==checkup.customer) and (request.user not in checkup.inspectors.all()):
             context = {'checkup': checkup,'percentage':checkup.completion_percentage()}
             return render(request, 'customerView.html', Context(request,context))
         else:
@@ -204,6 +211,17 @@ def checkupCreate(request, checkup_id=None):
         'checkup': checkup,
     }
     return render(request, 'create.html', Context(request,context))
+
+@login_required
+def update_user(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('userProfile')  # Redirect to a profile page or another page
+    else:
+        form = UserUpdateForm(instance=request.user)
+    return render(request, 'update_user.html', {'form': form})
 
 
 
