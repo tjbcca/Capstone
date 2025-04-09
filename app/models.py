@@ -20,6 +20,7 @@ class Checkup(models.Model):
     inspectors = models.ManyToManyField(User, related_name='inspector', default=1)
     startDT = models.DateTimeField(null=True)
     departDT = models.DateTimeField(null=True)
+    comments = models.TextField(blank=True,null=True)
     def save(self, *args, **kwargs):
         super(Checkup, self).save(*args, **kwargs)
         if not self.items.exists():
@@ -47,6 +48,12 @@ class Checkup(models.Model):
             return 0
         completed_items = self.items.filter(is_completed=True).count()
         return round((completed_items / total_items) * 100)
+    
+class CustomerProfile(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True,null=True)
+    addresses = EncryptedCharField(max_length=500,blank=True,null=True)
+    preferences = models.TextField(blank=True,null=True)
+
 class ChecklistItem(models.Model):
     checklist = models.ForeignKey(Checkup, related_name='items', on_delete=models.CASCADE)
     description = models.CharField(max_length=255)

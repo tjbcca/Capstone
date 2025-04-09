@@ -145,6 +145,7 @@ def signin_or_login(request):
                 email = request.POST.get('email')  # Get email from POST data
                 user.email = email  # Set the email for the user
                 user.save()  # Save the user with the email
+                CustomerProfile.objects.create(customer=user)
                 username = form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password1')
                 user = authenticate(request, username=username, password=password)
