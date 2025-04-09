@@ -417,13 +417,13 @@
                   class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                   aria-labelledby="userDropdown"
                 >
-                  <a class="dropdown-item" href="#">
+                  <a class="dropdown-item" href="{% url 'userProfile' %}">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                   </a>
                   <a class="dropdown-item" href="#">
                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Settings
+                    Preferences
                   </a>
                   <a class="dropdown-item" href="#">
                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -454,7 +454,7 @@
             <!-- Content Row -->
 
             {% if yourChecks.count == 0 %}
-            <h6>You have no appointments.</h6>
+            <h6 class="BLUE">You have no appointments.</h6>
             {% endif %} {% for i in yourChecks %} {% if i.status != Complete %}
             <!-- Progress Bar -->
             <div class="col-xl-3 col-md-6 mb-4">

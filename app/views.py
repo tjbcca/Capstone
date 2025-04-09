@@ -8,6 +8,8 @@ from app.forms import *
 import random
 from django.contrib.auth.models import Group
 from datetime import datetime
+from django.contrib.auth.models import User
+from django.db.models import Q
 
 @login_required
 def home(request):
@@ -46,7 +48,7 @@ def checks(request, checkup_id):
 @login_required
 def checkupView(request, checkup_id):
     checkup = get_object_or_404(Checkup, id=checkup_id)
-    if request.user==checkup.customer:
+    if (request.user==checkup.customer) and (request.user not in checkup.inspectors.all()):
         context = {'checkup': checkup,'percentage':checkup.completion_percentage()}
         return render(request, 'customerView.html', Context(request,context))
     else:
@@ -106,8 +108,11 @@ def manage(request):
 def calendar_view(request):
     year = datetime.now().date().year
     month = datetime.now().date().month
-    checkups = Checkup.objects.filter(startDT__year=year, startDT__month=month)
-    events = [{'date': checkup.startDT, 'name': checkup.name, 'address':checkup.address,'status':checkup.status} for checkup in checkups]
+    if is_user_in_group(request.user,'Inspector'):
+        checkups = Checkup.objects.filter(startDT__year=year, startDT__month=month)
+    else:
+        checkups = Checkup.objects.filter(startDT__year=year, startDT__month=month, customer=request.user)
+    events = [{'date': checkup.startDT, 'name': checkup.name, 'address':checkup.address,'status':checkup.status,'id':checkup.id} for checkup in checkups]
 
     # Generate calendar structure
     calendar = generate_calendar(year, month)
@@ -138,11 +143,15 @@ def signin_or_login(request):
             # Handle Sign Up
             form = UserCreationForm(request.POST)
             if form.is_valid():
-                form.save()  # Create new user
+                user = form.save(commit=False)  # Create new user without saving to the database yet
+                email = request.POST.get('email')  # Get email from POST data
+                user.email = email  # Set the email for the user
+                user.save()  # Save the user with the email
+                CustomerProfile.objects.create(customer=user)
                 username = form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password1')
                 user = authenticate(request, username=username, password=password)
-                auth_login(request,user)
+                auth_login(request, user)
                 messages.success(request, f'Account created for {username}!')
                 return redirect('Home')  # Redirect to landing page after successful sign-up
             else:
@@ -175,7 +184,7 @@ def Logout(request):
 def checkupCreate(request, checkup_id=None):
     if checkup_id:
         checkup = get_object_or_404(Checkup, id=checkup_id)
-        if request.user==checkup.customer:
+        if (request.user==checkup.customer) and (request.user not in checkup.inspectors.all()):
             context = {'checkup': checkup,'percentage':checkup.completion_percentage()}
             return render(request, 'customerView.html', Context(request,context))
         else:
@@ -202,3 +211,48 @@ def checkupCreate(request, checkup_id=None):
         'checkup': checkup,
     }
     return render(request, 'create.html', Context(request,context))
+
+@login_required
+def update_user(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('userProfile')  # Redirect to a profile page or another page
+    else:
+        form = UserUpdateForm(instance=request.user)
+    return render(request, 'update_user.html', {'form': form})
+
+
+
+def accounts(request):
+    query = request.GET.get('q', '')  # Get the search query from the GET request
+    status_filter = request.GET.get('status')
+    users = User.objects.all()  # Start with all users
+
+    # If there's a query, filter users by username, email, or first name
+    if query:
+        # Use Q objects to filter by multiple fields (OR logic)
+        users = users.filter(
+            Q(username__icontains=query) |
+            Q(email__icontains=query) |
+            Q(first_name__icontains=query)
+        )
+
+    if status_filter and status_filter != 'All':
+        for user in users:
+            if user.groups.filter(name="Inspector").exists():
+                print(user.username)
+        if status_filter  and status_filter == "Worker":
+             users = users.filter(groups__name="Inspector")
+
+        elif status_filter and status_filter == "Customer":
+            users = users.exclude(groups__name="Inspector")
+    
+
+    context = {
+        'users': users,
+        'query': query  # This will pass the search query back to the template
+    }
+
+    return render(request, 'accountview.html', context)
