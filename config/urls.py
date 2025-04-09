@@ -28,5 +28,6 @@ urlpatterns = [
     path('management/', manage, name='management'),
     path('calendar/', calendar_view, name='calendar'),
     path('create/',checkupCreate,name='Create'),
-    path('info/<int:checkup_id>/', checkupCreate, name='Edit')
+    path('info/<int:checkup_id>/', checkupCreate, name='Edit'),
+    path('Usercheck/',accounts, name="accounts")
 ]

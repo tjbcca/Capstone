@@ -8,6 +8,8 @@ from app.forms import *
 import random
 from django.contrib.auth.models import Group
 from datetime import datetime
+from django.contrib.auth.models import User
+from django.db.models import Q
 
 @login_required
 def home(request):
@@ -202,3 +204,37 @@ def checkupCreate(request, checkup_id=None):
         'checkup': checkup,
     }
     return render(request, 'create.html', Context(request,context))
+
+
+
+def accounts(request):
+    query = request.GET.get('q', '')  # Get the search query from the GET request
+    status_filter = request.GET.get('status')
+    users = User.objects.all()  # Start with all users
+
+    # If there's a query, filter users by username, email, or first name
+    if query:
+        # Use Q objects to filter by multiple fields (OR logic)
+        users = users.filter(
+            Q(username__icontains=query) |
+            Q(email__icontains=query) |
+            Q(first_name__icontains=query)
+        )
+
+    if status_filter and status_filter != 'All':
+        for user in users:
+            if user.groups.filter(name="Inspector").exists():
+                print(user.username)
+        if status_filter  and status_filter == "Worker":
+             users = users.filter(groups__name="Inspector")
+
+        elif status_filter and status_filter == "Customer":
+            users = users.exclude(groups__name="Inspector")
+    
+
+    context = {
+        'users': users,
+        'query': query  # This will pass the search query back to the template
+    }
+
+    return render(request, 'accountview.html', context)
