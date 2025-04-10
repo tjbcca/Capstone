@@ -1,0 +1,41 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+  .main {
+    color: var(--brand-blue);
+  }
+</style>
+<div class="main">
+  <h1>User Profile</h1>
+  <p><strong>Username:</strong> {{ account.username }}</p>
+  <p><strong>First Name:</strong> {{ account.first_name }}</p>
+  <p><strong>Last Name:</strong> {{ account.last_name }}</p>
+  <p><strong>Email:</strong> {{ account.email }}</p>
+  {% if customer_profile %}
+  <p><strong>Preferences:</strong> {{ customer_profile.preferences }}</p>
+  <p><strong>Addresses:</strong> {{ customer_profile.addresses }}</p>
+  {% else %}
+  <p>No customer profile found.</p>
+  {% endif %}
+  <h2>Checkup History</h2>
+
+  <ul>
+    {% for checkup in checkups %}
+    <li>
+      <a href="{% url 'Edit' checkup_id=checkup.id %}">
+        <table>
+          <p><strong>Name:</strong> {{ checkup.name }}</p>
+
+          <p><strong>Start Date:</strong> {{ checkup.startDT }}</p>
+
+          <p><strong>Departure Date:</strong> {{ checkup.departDT }}</p>
+
+          <p><strong>Completion Percentage:</strong> {{ checkup.completion_percentage }}%</p>
+
+          <p><strong>Status:</strong> {{ checkup.status }}</p>
+        </table>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

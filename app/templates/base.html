@@ -161,12 +161,21 @@
           >
         </li>
 
-        <!-- Nav Item - Tables -->
+        <!-- Nav Item - Checkup Management -->
         {% if user.groups.all.0.name == 'Inspector' %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'management' %}">
             <i class="fas fa-fw fa-wrench"></i>
             <span>Checkup Management</span></a
+          >
+        </li>
+
+        <!-- Nav Item - User Management -->
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts' %}">
+            <i class="fas fa-user fa-sm fa-fw"></i>
+            <span>User Management</span></a
           >
         </li>
         {% endif %}

@@ -128,8 +128,8 @@
         {% if users %}
             {% for user in users %}
                 <li class="user-item">
-                    <a href="{% url 'accounts' %}" class="user-link">
-                        {{ user.username }}, {{ user.first_name }}, {{ user.email }}
+                    <a href="{% url 'manageUser' user_id=user.id %}" class="user-link">
+                        {{ user.username }}{% if user.first_name %}, {{ user.first_name }}{% endif %}{% if user.last_name %} {{ user.last_name }}{% endif %}{% if user.last_name %}, {{ user.email }}{% endif %}
                     </a>
                 </li>
             {% endfor %}

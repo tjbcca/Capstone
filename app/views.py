@@ -123,7 +123,7 @@ def calendar_view(request):
         'calendar': calendar,
         'events': events,
     }
-    return render(request, 'calendar.html', context)
+    return render(request, 'calendar.html', Context(request,context))
 
 def generate_calendar(year, month):
     # Function to generate calendar structure
@@ -221,11 +221,12 @@ def update_user(request):
             return redirect('userProfile')  # Redirect to a profile page or another page
     else:
         form = UserUpdateForm(instance=request.user)
-    return render(request, 'update_user.html', {'form': form})
+    return render(request, 'update_user.html', Context(request, {'form': form}))
 
-
-
+@login_required
 def accounts(request):
+    if not is_user_in_group(request.user, 'Inspector'):
+        return redirect('Home')
     query = request.GET.get('q', '')  # Get the search query from the GET request
     status_filter = request.GET.get('status')
     users = User.objects.all()  # Start with all users
@@ -255,4 +256,37 @@ def accounts(request):
         'query': query  # This will pass the search query back to the template
     }
 
-    return render(request, 'accountview.html', context)
+    return render(request, 'accountview.html', Context(request, context))
+
+@login_required
+def manageUser(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    edit_mode = is_user_in_group(request.user, 'Admin')
+
+    checkups = Checkup.objects.filter(customer=user)
+
+    if request.method == 'POST' and edit_mode:
+        form = AdminUserUpdateForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            context = {
+                'account': user,
+                'form': form,
+                'checkups': checkups,
+                'edit_mode': edit_mode,
+            }
+            return render(request, 'UserEdit.html', Context(request, context))
+    else:
+        form = AdminUserUpdateForm(instance=user)
+
+    context = {
+        'account': user,
+        'form': form,
+        'checkups': checkups,
+        'edit_mode': edit_mode,
+        'customer_profile': CustomerProfile.objects.get(customer=user)
+    }
+    if edit_mode:
+        return render(request, 'UserEdit.html', Context(request, context))
+    else:
+        return render(request, 'UserInfo.html', Context(request, context))

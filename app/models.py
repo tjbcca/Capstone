@@ -2,14 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from encrypted_model_fields.fields import EncryptedCharField
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # image = models.ImageField(default=None)
-    bio = models.CharField(max_length=200, blank=True, null=True)
-    notes = models.CharField(max_length=1000, blank=True, null=True)
+# class Profile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     image = models.ImageField(default=None)
+#     bio = models.CharField(max_length=200, blank=True, null=True)
+#     notes = models.CharField(max_length=1000, blank=True, null=True)
 
-    def __str__(self):
-        return f'{self.user.username} Profile'
+#     def __str__(self):
+#         return f'{self.user.username} Profile'
     
 class Checkup(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True,null=True)

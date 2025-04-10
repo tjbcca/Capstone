@@ -42,16 +42,24 @@
   .save-btn:hover {
     background-color: #0a2d52;
   }
+  input[type="checkbox"] {
+    width: 100pt;
+    height: 100pt;
+  }
+  input[type="text"] {
+    width: auto;
+    height: 12rem;
+  }
 </style>
 <h1>Checklist for {{ checkup.customer.username }}</h1>
 <form method="post">
   {% csrf_token %}
-  <ul>
+  <ul class="checklist">
     {% for form in formset %}
-    <li>{{ form.description }}: {{ form.is_completed }}</li>
+    <li class="check">{{ form.description }}: {{ form.is_completed }}</li>
     {% endfor %}
   </ul>
-  <button type="submit">Save Checklist</button>
+  <button type="submit" class="save-btn">Save Checklist</button>
 </form>
 <h1>{{ percentage }}</h1>
 {% endblock %}

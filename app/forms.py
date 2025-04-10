@@ -60,3 +60,38 @@ class UserUpdateForm(forms.ModelForm):
             customer_profile.save()
             return user
 
+class AdminUserUpdateForm(forms.ModelForm):
+    addresses = forms.CharField(max_length=500, required=False)
+    preferences = forms.CharField(widget=forms.Textarea, required=False)
+    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False)
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            try:
+                customer_profile = CustomerProfile.objects.get(customer=self.instance)                
+                self.fields['first_name'].initial = customer_profile.customer.first_name
+                self.fields['last_name'].initial = customer_profile.customer.last_name
+                self.fields['email'].initial = customer_profile.customer.email
+                self.fields['addresses'].initial = customer_profile.addresses
+                self.fields['preferences'].initial = customer_profile.preferences
+                self.fields['groups'].initial = self.instance.groups.all()
+            except CustomerProfile.DoesNotExist:
+                print("CustomerProfile does not exist.")
+
+
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if commit:
+            user.save()
+            customer_profile, created = CustomerProfile.objects.get_or_create(customer=user)
+            customer_profile.addresses = self.cleaned_data['addresses']
+            customer_profile.preferences = self.cleaned_data['preferences']
+            customer_profile.save()
+            user.groups.set(self.cleaned_data['groups'])
+        return user
