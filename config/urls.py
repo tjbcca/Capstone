@@ -31,5 +31,6 @@ urlpatterns = [
     path('info/<int:checkup_id>/', checkupCreate, name='Edit'),
     path('profile/', update_user, name='userProfile'),
     path('users/',accounts, name="accounts"),
-    path('user-info/<int:user_id>/',manageUser,name='manageUser')
+    path('user-info/<int:user_id>/',manageUser,name='manageUser'),
+    path('user-history/',history,name='history'),
 ]

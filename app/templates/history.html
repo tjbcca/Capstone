@@ -89,26 +89,19 @@
   }
 </style>
 <div class="main edit-profile-container">
-  <h1 class="edit-title">Edit User Profile</h1>
-  <form method="post" class="edit-form">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit" class="submit-button">Save</button>
-  </form>
   <h2 class="section-title">Checkup History</h2>
   <ul class="checkup-list">
     {% for checkup in checkups %}
-    <a class="checkup-link" href="{% url 'Edit' checkup_id=checkup.id %}">
-      <li class="checkup-item">
-        <p class="checkup-field"><strong>Name:</strong> {{ checkup.name }}</p>
-        <p class="checkup-field"><strong>Status:</strong> {{ checkup.status }}</p>
-        <p class="checkup-field"><strong>Start Date:</strong> {{ checkup.startDT }}</p>
-        <p class="checkup-field"><strong>Departure Date:</strong> {{ checkup.departDT }}</p>
-        <p class="checkup-field"><strong>Comments:</strong> {{ checkup.comments }}</p>
-        <p class="checkup-field">
-          <strong>Completion Percentage:</strong> {{ checkup.completion_percentage }}%
-        </p>
-      </li>
-    </a>
+    <li class="checkup-item">
+      <p class="checkup-field"><strong>Name:</strong> {{ checkup.name }}</p>
+      <p class="checkup-field"><strong>Status:</strong> {{ checkup.status }}</p>
+      <p class="checkup-field"><strong>Start Date:</strong> {{ checkup.startDT }}</p>
+      <p class="checkup-field"><strong>Departure Date:</strong> {{ checkup.departDT }}</p>
+      <p class="checkup-field"><strong>Comments:</strong> {{ checkup.comments }}</p>
+      <p class="checkup-field">
+        <strong>Completion Percentage:</strong> {{ checkup.completion_percentage }}%
+      </p>
+    </li>
     {% endfor %}
   </ul>
 </div>

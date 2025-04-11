@@ -1,37 +1,104 @@
 {% extends 'base.html' %} {% block content %}
 <style>
-  .main {
-    color: var(--brand-blue);
+  .profile-container {
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  }
+  .profile-title {
+    font-size: 28px;
+    color: #273c75;
+    border-bottom: 2px solid #00a8ff;
+    margin-bottom: 25px;
+    padding-bottom: 6px;
+  }
+  .user-info {
+    margin-bottom: 30px;
+  }
+  .user-field {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  .user-field strong {
+    color: #353b48;
+  }
+  .section-title {
+    font-size: 22px;
+    margin-top: 40px;
+    color: #40739e;
+    border-bottom: 1px solid #dcdde1;
+    padding-bottom: 5px;
+  }
+  .checkup-list {
+    list-style: none;
+    padding: 0;
+  }
+  .checkup-item {
+    background-color: #f1f2f6;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+  .checkup-item:hover {
+    background-color: #dcdde1;
+  }
+  .checkup-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .checkup-table {
+    width: 100%;
+  }
+  .checkup-field {
+    margin: 6px 0;
+    font-size: 15px;
+  }
+  .checkup-field strong {
+    color: #2d3436;
+  }
+  /* Responsive */
+  @media (max-width: 600px) {
+    .profile-container {
+      padding: 20px;
+    }
+    .profile-title,
+    .section-title {
+      font-size: 20px;
+    }
   }
 </style>
-<div class="main">
-  <h1>User Profile</h1>
-  <p><strong>Username:</strong> {{ account.username }}</p>
-  <p><strong>First Name:</strong> {{ account.first_name }}</p>
-  <p><strong>Last Name:</strong> {{ account.last_name }}</p>
-  <p><strong>Email:</strong> {{ account.email }}</p>
-  {% if customer_profile %}
-  <p><strong>Preferences:</strong> {{ customer_profile.preferences }}</p>
-  <p><strong>Addresses:</strong> {{ customer_profile.addresses }}</p>
-  {% else %}
-  <p>No customer profile found.</p>
-  {% endif %}
-  <h2>Checkup History</h2>
-
-  <ul>
+<div class="main profile-container">
+  <h1 class="profile-title">User Profile</h1>
+  <div class="user-info">
+    <p class="user-field"><strong>Username:</strong> {{ account.username }}</p>
+    <p class="user-field"><strong>First Name:</strong> {{ account.first_name }}</p>
+    <p class="user-field"><strong>Last Name:</strong> {{ account.last_name }}</p>
+    <p class="user-field"><strong>Email:</strong> {{ account.email }}</p>
+    {% if customer_profile %}
+    <p class="user-field"><strong>Preferences:</strong> {{ customer_profile.preferences }}</p>
+    <p class="user-field"><strong>Addresses:</strong> {{ customer_profile.addresses }}</p>
+    {% else %}
+    <p class="user-field">No customer profile found.</p>
+    {% endif %}
+  </div>
+  <h2 class="section-title">Checkup History</h2>
+  <ul class="checkup-list">
     {% for checkup in checkups %}
-    <li>
-      <a href="{% url 'Edit' checkup_id=checkup.id %}">
-        <table>
-          <p><strong>Name:</strong> {{ checkup.name }}</p>
-
-          <p><strong>Start Date:</strong> {{ checkup.startDT }}</p>
-
-          <p><strong>Departure Date:</strong> {{ checkup.departDT }}</p>
-
-          <p><strong>Completion Percentage:</strong> {{ checkup.completion_percentage }}%</p>
-
-          <p><strong>Status:</strong> {{ checkup.status }}</p>
+    <li class="checkup-item">
+      <a class="checkup-link" href="{% url 'Edit' checkup_id=checkup.id %}">
+        <table class="checkup-table">
+          <p class="checkup-field"><strong>Name:</strong> {{ checkup.name }}</p>
+          <p class="checkup-field"><strong>Start Date:</strong> {{ checkup.startDT }}</p>
+          <p class="checkup-field"><strong>Departure Date:</strong> {{ checkup.departDT }}</p>
+          <p class="checkup-field">
+            <strong>Completion Percentage:</strong> {{ checkup.completion_percentage }}%
+          </p>
+          <p class="checkup-field"><strong>Status:</strong> {{ checkup.status }}</p>
         </table>
       </a>
     </li>

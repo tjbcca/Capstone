@@ -100,6 +100,7 @@
     <button type="submit" name="delete" class="btn btn-danger">Delete</button>
     {% endif %}
   </form>
+  <br />
   {% if checkup != None %}
   <a href="{% url 'checks' checkup_id=checkup.id %}">Checklist</a>
   {% endif %}

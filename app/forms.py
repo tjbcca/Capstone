@@ -63,7 +63,12 @@ class UserUpdateForm(forms.ModelForm):
 class AdminUserUpdateForm(forms.ModelForm):
     addresses = forms.CharField(max_length=500, required=False)
     preferences = forms.CharField(widget=forms.Textarea, required=False)
-    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False)
+
+    groups = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple
+        )
 
     class Meta:
         model = User

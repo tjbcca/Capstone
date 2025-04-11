@@ -46,27 +46,6 @@ def checks(request, checkup_id):
     return render(request, 'checks.html', Context(request,context))
 
 @login_required
-def checkupView(request, checkup_id):
-    checkup = get_object_or_404(Checkup, id=checkup_id)
-    if (request.user==checkup.customer) and (request.user not in checkup.inspectors.all()):
-        context = {'checkup': checkup,'percentage':checkup.completion_percentage()}
-        return render(request, 'customerView.html', Context(request,context))
-    else:
-        if request.user not in checkup.inspectors.all():
-                return redirect('Home')
-
-        if request.method == 'POST':
-            formset = [ChecklistItemForm(request.POST, prefix=str(item.id), instance=item) for item in checkup.items.all()]
-            if all(form.is_valid() for form in formset):
-                for form in formset:
-                    form.save()
-                return redirect('checks', checkup_id=checkup.id)
-        else:
-            formset = [ChecklistItemForm(prefix=str(item.id), instance=item) for item in checkup.items.all()]
-        context = {'checkup': checkup, 'formset': formset,'percentage':checkup.completion_percentage()}
-        return render(request, 'checks.html', Context(request,context))
-
-@login_required
 def manage(request):
     if not is_user_in_group(request.user, 'Inspector'):
         return redirect('Home')
@@ -260,10 +239,12 @@ def accounts(request):
 
 @login_required
 def manageUser(request, user_id):
+    if not is_user_in_group(request.user, 'Inspector'):
+        return redirect('Home')
     user = get_object_or_404(User, id=user_id)
     edit_mode = is_user_in_group(request.user, 'Admin')
 
-    checkups = Checkup.objects.filter(customer=user)
+    checkups = Checkup.objects.filter(customer=user).order_by('startDT').reverse()
 
     if request.method == 'POST' and edit_mode:
         form = AdminUserUpdateForm(request.POST, instance=user)
@@ -290,3 +271,10 @@ def manageUser(request, user_id):
         return render(request, 'UserEdit.html', Context(request, context))
     else:
         return render(request, 'UserInfo.html', Context(request, context))
+
+@login_required
+def history(request):
+    context = {
+        'checkups': Checkup.objects.filter(customer=request.user).order_by('startDT').reverse()
+    }
+    return render(request, 'history.html', Context(request,context))

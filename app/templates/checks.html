@@ -3,63 +3,117 @@
   This area will be for the information that the user is trying to view such as checklist progress.
 </h3> -->
 <style>
-  .checklist {
+  /* Global styles */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  /* Wrapper for the checklist */
+  .checklist-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 20px 10px;
+    box-sizing: border-box;
+  }
+  /* Page Title */
+  .checklist-title {
+    color: #333;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  /* Main form container */
+  .checklist-form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 450px; /* Slightly larger for better space usage */
+    box-sizing: border-box;
+  }
+  /* Checklist item list */
+  .checklist-items {
     list-style: none;
     padding: 0;
-    padding-left: 5%;
-    max-width: 300px;
+    margin: 0;
   }
-  .check {
-    background: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 10px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    border-color: #b8433b;
-  }
-  .check {
+  /* Individual checklist item */
+  .checklist-item {
     display: flex;
     justify-content: space-between;
-    font-size: 18px;
-    width: 115%;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+    flex-wrap: wrap; /* This makes it responsive automatically */
   }
-  .save-btn {
-    background-color: #0a3360;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: bold;
+  .checklist-item:last-child {
+    border-bottom: none;
+  }
+  /* Description */
+  .check-description {
+    flex: 1;
+    font-weight: 500;
+    font-size: 1rem;
+    color: #333;
+    min-width: 150px;
+  }
+  /* Text input */
+  input[type="text"] {
+    padding: 6px 1px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+    margin: 8px 0 0 15px;
+    box-sizing: border-box;
+  }
+  /* Checkbox styling */
+  input[type="checkbox"] {
+    transform: scale(1.2);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    margin-left: 15px;
+    margin-top: 8px;
+  }
+  /* Save button */
+  .save-btn {
+    display: block;
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
     margin-top: 20px;
   }
   .save-btn:hover {
-    background-color: #0a2d52;
+    background-color: #0056b3;
   }
-  input[type="checkbox"] {
-    width: 100pt;
-    height: 100pt;
-  }
-  input[type="text"] {
-    width: auto;
-    height: 12rem;
+  /* Completion Percentage */
+  .completion-percentage {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #333;
+    margin-top: 15px;
   }
 </style>
-<h1>Checklist for {{ checkup.customer.username }}</h1>
-<form method="post">
+<h1 class="checklist-title">Checklist for {{ checkup.customer.username }}</h1>
+<form method="post" class="checklist-form">
   {% csrf_token %}
-  <ul class="checklist">
+  <ul class="checklist-items">
     {% for form in formset %}
-    <li class="check">{{ form.description }}: {{ form.is_completed }}</li>
+    <li class="checklist-item">
+      <span class="check-description">{{ form.description }}</span>:
+      <span class="check-status">{{ form.is_completed }}</span>
+    </li>
     {% endfor %}
   </ul>
   <button type="submit" class="save-btn">Save Checklist</button>
 </form>
-<h1>{{ percentage }}</h1>
+<h1 class="completion-percentage">{{ percentage }}</h1>
 {% endblock %}

@@ -1,9 +1,95 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Checklist for {{ checkup.startDT }}</h1>
-<ul>
-  {% for item in checkup.items.all %}
-  <li>{{ item.description }}: {% if item.is_completed %}Complete{% else %}Incomplete{% endif %}</li>
-  {% endfor %}
-</ul>
-<h1>{{ checkup.completion_percentage }}%</h1>
+<style>
+  .profile-container {
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  }
+  .profile-title {
+    font-size: 28px;
+    color: #273c75;
+    border-bottom: 2px solid #00a8ff;
+    margin-bottom: 25px;
+    padding-bottom: 6px;
+  }
+  .user-info {
+    margin-bottom: 30px;
+  }
+  .user-field {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  .user-field strong {
+    color: #353b48;
+  }
+  .section-title {
+    font-size: 22px;
+    margin-top: 40px;
+    color: #40739e;
+    border-bottom: 1px solid #dcdde1;
+    padding-bottom: 5px;
+  }
+  .checkup-list {
+    list-style: none;
+    padding: 0;
+  }
+  .checkup-item {
+    background-color: #f1f2f6;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+  .checkup-item:hover {
+    background-color: #dcdde1;
+  }
+  .checkup-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .checkup-table {
+    width: 100%;
+  }
+  .checkup-field {
+    margin: 6px 0;
+    font-size: 15px;
+  }
+  .checkup-field strong {
+    color: #2d3436;
+  }
+  /* Responsive */
+  @media (max-width: 600px) {
+    .profile-container {
+      padding: 20px;
+    }
+    .profile-title,
+    .section-title {
+      font-size: 20px;
+    }
+  }
+</style>
+<div class="main profile-container">
+  <table class="checkup-table">
+    <h1>{{ checkup.name }}</h1>
+    {% if checkup.customer %}
+    <p class="checkup-field"><strong>Username:</strong> {{ checkup.customer.username }}</p>
+    <p class="checkup-field"><strong>First Name:</strong> {{ checkup.customer.first_name }}</p>
+    <p class="checkup-field"><strong>Last Name:</strong> {{ checkup.customer.last_name }}</p>
+    {% endif %}
+    <p class="checkup-field"><strong>Start Date:</strong> {{ checkup.startDT }}</p>
+    <p class="checkup-field"><strong>Departure Date:</strong> {{ checkup.departDT }}</p>
+    <p class="checkup-field"><strong>Status:</strong> {{ checkup.status }}</p>
+  </table>
+  <h1>Checklist for {{ checkup.startDT }}</h1>
+  <ul>
+    {% for item in checkup.items.all %}
+    <li>{{ item.description }}: {% if item.is_completed %}Complete{% else %}Incomplete{% endif %}</li>
+    {% endfor %}
+  </ul>
+  <h1>{{ checkup.completion_percentage }}% complete</h1>
+</div>
 {% endblock %}
